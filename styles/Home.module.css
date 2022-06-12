@@ -1,0 +1,15 @@
+.home {
+}
+
+.home .searchContainer {
+    min-width: 35%;
+}
+
+.home .searchContainer .input {
+    outline: none;
+    border: none;
+    background: none;
+    background-color: transparent;
+
+    padding: 0 1rem;
+}
