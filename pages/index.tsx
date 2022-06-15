@@ -1,17 +1,56 @@
+import { useState, useEffect, useTransition } from 'react'
+import { useRouter } from 'next/router'
 import type { NextPage, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import classes from '../styles/Home.module.css'
-import { fetchCountries, normalizeCountriesData, Country } from '../utils'
+import { fetchCountries, normalizeCountriesData, Country, searchCountrires } from '../utils'
 
 import { AiOutlineSearch as SearchIcon } from 'react-icons/ai'
 import CountryCard from '../components/countryCard'
 
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../store/hooks';
+import {
+  selectSearch,
+  setQuery,
+} from '../store/search/searchSlice';
+import {
+  selectCountries,
+  setCountries,
+} from '../store/countries/countriesSlice';
+
 const Home = ({ 
   countries,
  }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [search, setSearch] = useState('');
+
+  const dispatch = useAppDispatch();
+  const searchValue = useAppSelector(selectSearch);
+  const countriesData = useAppSelector(selectCountries);
+
+  const [isTexting, startTransition] = useTransition();
+  const router = useRouter();
+
+  useEffect(()=> {
+    if (countries.length !== countriesData.length) {
+      dispatch(setCountries(countries));
+    }
+  }, [countries]);
 
   const first40Countries = countries.slice(0, 40);
+  // const filteredCountries = search ? searchCountrires(search, countries) : first40Countries;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toLowerCase()
+    // setSearch(value);
+    dispatch(setQuery(value));
+    startTransition(()=> {
+      router.push(`/?search=${value.trim().replace(/\s/g, '+')}`);
+    });
+  }
 
   return (
     <div className={classes.home}>
@@ -26,7 +65,14 @@ const Home = ({
 
           <div className={`p-2 flex items-center bg-primary dark:bg-primary-dark shadow-sm rounded-sm px-4 ${classes.searchContainer}`}>
             <SearchIcon className='' />
-            <input type="text" className={`bg-transparent text-sm w-full ${classes.input}`} placeholder="Search for a country" />
+            <input 
+              type="text" 
+              className={`bg-transparent text-sm w-full ${classes.input}`} 
+              placeholder="Search for a country"
+              value={searchValue}
+              onChange={handleSearch}
+            />
+            {isTexting && <span className='font-xs opacity-50'>typing</span>}
           </div>
 
           <div className={`p-2 ${classes.filterContainer}`}></div>
@@ -46,9 +92,12 @@ const Home = ({
   )
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (ctx: any) => {
   const data = await fetchCountries();
-  const countries = normalizeCountriesData(data);
+  const search = ctx.query.search as string;
+
+  const normalizeCountries = normalizeCountriesData(data);
+  const countries = search ? searchCountrires(search, normalizeCountries) : normalizeCountries;
 
   return {
     props: {

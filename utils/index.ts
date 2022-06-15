@@ -46,7 +46,7 @@ export function normalizeCountriesData(data: any[]): Country[] {
         const tld = item.tld || [''];
         const currencies = item.currencies ? Object.keys(item.currencies) : [''];
         const languages = item.languages ? 
-            Object.keys(item.languages).map(key => item.languages[key].name) : [''];
+            Object.keys(item.languages).map(key => item.languages[key]) : [''];
         const borderCountires = item.borders?.map((code: { toString: () => any; }) => getCountryFullName(data, code.toString())) || [''];
 
         return {
@@ -66,4 +66,24 @@ export function normalizeCountriesData(data: any[]): Country[] {
     });
 
     return newData;
+}
+
+export function searchCountrires(query: string, countries: Country[]) {
+    const filteredCountries = countries.filter(
+        country => 
+            country.name.toLowerCase().includes(query) ||
+            country.nativeName.toLowerCase().includes(query) ||
+            country.capital.toLowerCase().includes(query) ||
+            country.region.toLowerCase().includes(query)
+    );
+
+    return filteredCountries;
+}
+
+export function findCountryById(id: number, countries: Country[]) {
+    const country = 
+        countries[+id - 1] || 
+        countries.find(country => country.id === +id);
+
+    return country;
 }

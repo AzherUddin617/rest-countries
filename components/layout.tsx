@@ -1,29 +1,54 @@
-import Image from 'next/image';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
-import { MdDarkMode, MdOutlineDarkMode } from 'react-icons/md';
+import { MdOutlineDarkMode, MdDarkMode } from 'react-icons/md';
 
-import moonSvg from '../files/moon-dark.svg';
+import {
+    useAppDispatch,
+    useAppSelector,
+} from '../store/hooks';
+import {
+    selectTheme,
+    toggleTheme,
+} from '../store/theme/themeSlice';
+import * as themes from '../store/theme/themeTypes';
 
 function Layout(props: { children: React.ReactNode }) {
+  const dispatch = useAppDispatch();
+  const themeMode = useAppSelector(selectTheme);
+
+  useEffect(()=> {
+    if (themeMode === themes.dark) {
+        document.getElementsByTagName('html')[0].classList.add('dark');
+    } else {
+        document.getElementsByTagName('html')[0].classList.remove('dark');
+    }
+  }, [themeMode]);
+
   return (
     <>
-        <header className="header bg-primary dark:bg-primary-dark py-4 shadow-sm">
+        <header className="header bg-primary dark:bg-primary-dark dark:text-secondary py-4 shadow-sm">
             <div className="container flex justify-between">
 
                 <h2 className="title text-lg font-semibold">Where in the world?</h2>
 
-                <div className="mode-change flex items-center">
+                <button 
+                    onClick={()=> dispatch(toggleTheme())}
+                    className="mode-change flex items-center"
+                >
                     {/* <Image src={moonSvg} layout="intrinsic" width={20} alt="S" className='mode-icon' /> */}
-                    <MdOutlineDarkMode className='mode-icon' />
+                    {
+                        themeMode === themes.dark ?
+                        <MdDarkMode className='mode-icon' /> :
+                        <MdOutlineDarkMode className='mode-icon' />
+                    }
 
                     <p className="mode-text pl-2">Dark Mode</p>
-                </div>
+                </button>
 
             </div>
         </header>
 
-        <main className="main bg-secondary dark:bg-secondary-dark pt-6">
+        <main className="main bg-secondary dark:bg-secondary-dark dark:text-secondary pt-6">
             {props.children}
         </main>
     </>
