@@ -25,7 +25,7 @@ import {
 const Home = ({ 
   countries,
  }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [search, setSearch] = useState('');
+  // const [search, setSearch] = useState('');
 
   const dispatch = useAppDispatch();
   const searchValue = useAppSelector(selectSearch);
@@ -33,23 +33,25 @@ const Home = ({
 
   const [isTexting, startTransition] = useTransition();
   const router = useRouter();
+  const search = router.query.search as string;
 
-  useEffect(()=> {
-    if (countries.length !== countriesData.length) {
-      dispatch(setCountries(countries));
-    }
-  }, [countries]);
+  // useEffect(()=> {
+  //   if (countries.length !== countriesData.length) {
+  //     dispatch(setCountries(countries));
+  //   }
+  // }, [countries]);
 
   const first40Countries = countries.slice(0, 40);
-  // const filteredCountries = search ? searchCountrires(search, countries) : first40Countries;
+  const filteredCountries = search ? searchCountrires(search, countries) : first40Countries;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase()
     // setSearch(value);
     dispatch(setQuery(value));
-    startTransition(()=> {
-      router.push(`/?search=${value.trim().replace(/\s/g, '+')}`);
-    });
+    // startTransition(()=> {
+    //   router.push(`/?search=${value.trim().replace(/\s/g, '+')}`);
+    // });
+    router.push(`/?search=${value.trim().replace(/\s/g, '+')}`, undefined, { shallow: true });
   }
 
   return (
@@ -81,7 +83,7 @@ const Home = ({
 
         <div className={`main ${classes.main}`}>
           <div className={`countries flex flex-wrap justify-between ${classes.countries}`}>
-            {first40Countries.map((country: Country, index) => (
+            {filteredCountries.map((country: Country, index) => (
               <CountryCard key={index} country={country} />
             ))}
           </div>
@@ -94,7 +96,8 @@ const Home = ({
 
 export const getServerSideProps = async (ctx: any) => {
   const data = await fetchCountries();
-  const search = ctx.query.search as string;
+  // const search = ctx.query.search as string;
+  const search = false;
 
   const normalizeCountries = normalizeCountriesData(data);
   const countries = search ? searchCountrires(search, normalizeCountries) : normalizeCountries;
