@@ -32,3 +32,18 @@ a {
     outline: none;
     background: none;
 }
+
+.header {
+    @apply bg-primary dark:bg-primary-dark dark:text-secondary py-4 shadow-sm;
+}
+.header .title {
+    @apply text-lg font-semibold;
+}
+
+.main {
+    @apply bg-secondary dark:bg-secondary-dark dark:text-secondary pt-6;
+}
+
+.countryCard {
+    @apply bg-primary dark:bg-primary-dark flex-[0_0_100%] md:flex-[0_0_23%] sm:flex-[0_0_32%] mb-6 rounded-md overflow-hidden shadow-sm cursor-pointer transition-shadow hover:shadow-md;
+}

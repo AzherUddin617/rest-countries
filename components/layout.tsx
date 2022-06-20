@@ -26,10 +26,10 @@ function Layout(props: { children: React.ReactNode }) {
 
   return (
     <>
-        <header className="header bg-primary dark:bg-primary-dark dark:text-secondary py-4 shadow-sm">
+        <header className="header">
             <div className="container flex justify-between">
 
-                <h2 className="title text-lg font-semibold">Where in the world?</h2>
+                <h2 className="title">Where in the world?</h2>
 
                 <button 
                     onClick={()=> dispatch(toggleTheme())}
@@ -48,7 +48,7 @@ function Layout(props: { children: React.ReactNode }) {
             </div>
         </header>
 
-        <main className="main bg-secondary dark:bg-secondary-dark dark:text-secondary pt-6">
+        <main className="main">
             {props.children}
         </main>
     </>

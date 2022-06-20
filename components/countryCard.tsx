@@ -24,7 +24,7 @@ function CountryCard({ country }: { country: CountryType }) {
   return (
     <Link href="/country/[id]" as={`/country/${country.id}`}>
       <div
-        className="card bg-primary dark:bg-primary-dark flex-[0_0_100%] md:flex-[0_0_23%] sm:flex-[0_0_32%] mb-6 rounded-md overflow-hidden shadow-sm cursor-pointer transition-shadow hover:shadow-md"
+        className="countryCard"
       >
 
           <Image src={country.flag} alt='FLAG' 

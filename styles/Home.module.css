@@ -1,15 +1,23 @@
 .home {
 }
 
-.home .searchContainer {
-    min-width: 35%;
+.home .container .top {
+    @apply pb-6 flex justify-between;
 }
 
-.home .searchContainer .input {
-    outline: none;
-    border: none;
-    background: none;
-    background-color: transparent;
+.home .container .top .searchContainer {
+    @apply p-2 flex items-center bg-primary dark:bg-primary-dark shadow-sm rounded-sm px-4;
+    /* min-width: 35%; */
+    @apply min-w-[35%];
+}
 
-    padding: 0 1rem;
+.home .container .top .searchContainer .input {
+    @apply text-sm w-full;
+    @apply outline-none border-none bg-none py-1 dark:bg-primary-dark;
+}
+
+.home .container .main {
+}
+.home .container .main .countries {
+    @apply flex flex-wrap justify-between;
 }

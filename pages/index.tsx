@@ -29,7 +29,7 @@ const Home = ({
 
   const dispatch = useAppDispatch();
   const searchValue = useAppSelector(selectSearch);
-  const countriesData = useAppSelector(selectCountries);
+  // const countriesData = useAppSelector(selectCountries);
 
   const [isTexting, startTransition] = useTransition();
   const router = useRouter();
@@ -63,13 +63,13 @@ const Home = ({
       </Head>
 
       <div className={["container", classes.container].join(" ")}>
-        <div className={`pb-6 flex justify-between ${classes.top}`}>
+        <div className={classes.top}>
 
-          <div className={`p-2 flex items-center bg-primary dark:bg-primary-dark shadow-sm rounded-sm px-4 ${classes.searchContainer}`}>
+          <div className={classes.searchContainer}>
             <SearchIcon className='' />
             <input 
               type="text" 
-              className={`bg-transparent text-sm w-full ${classes.input}`} 
+              className={classes.input} 
               placeholder="Search for a country"
               value={searchValue}
               onChange={handleSearch}
@@ -77,12 +77,12 @@ const Home = ({
             {isTexting && <span className='font-xs opacity-50'>typing</span>}
           </div>
 
-          <div className={`p-2 ${classes.filterContainer}`}></div>
+          {/* <div className={`p-2 ${classes.filterContainer}`}></div> */}
 
         </div>
 
-        <div className={`main ${classes.main}`}>
-          <div className={`countries flex flex-wrap justify-between ${classes.countries}`}>
+        <div className={classes.main}>
+          <div className={classes.countries}>
             {filteredCountries.map((country: Country, index) => (
               <CountryCard key={index} country={country} />
             ))}
@@ -97,14 +97,13 @@ const Home = ({
 export const getServerSideProps = async (ctx: any) => {
   const data = await fetchCountries();
   // const search = ctx.query.search as string;
-  const search = false;
 
   const normalizeCountries = normalizeCountriesData(data);
-  const countries = search ? searchCountrires(search, normalizeCountries) : normalizeCountries;
+  // const countries = search ? searchCountrires(search, normalizeCountries) : normalizeCountries;
 
   return {
     props: {
-      countries: JSON.parse(JSON.stringify(countries)) as Country[],
+      countries: JSON.parse(JSON.stringify(normalizeCountries)) as Country[],
     },
   }
 }
